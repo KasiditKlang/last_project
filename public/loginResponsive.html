@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Istok+Web&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="pic/Logo.png" alt="Logo">
+        </div>
+        <div class="welcome-message">Welcome!</div>
+        <div class="sub-message">Sign in to your account</div>
+
+        <form id="login-form" class="user">
+            <label for="username" class="text-control-input">User:</label>
+            <input type="text" id="username" name="username" placeholder="Enter User name" required>
+
+            <label for="password" class="text-control-input">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+            <div class="checkbox-wrapper">
+                <label class="left">
+                    <input type="checkbox" id="remember" name="remember">
+                    <span>Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="signin-button">SIGN IN</button>
+        </form>
+
+        <div class="register">
+            <p>No register yet? <a href="register.html" class="get-started">Get started</a></p>
+        </div>
+    </div>
+
+    <script>
+        async function loginUser(username, password) {
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Login successful!');
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('authToken', result.token);
+                    window.location.href = 'rndFood.html';
+                } else {
+                    alert(result.error || 'Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            loginUser(username, password);
+        });
+    </script>
+</body>
+</html>
